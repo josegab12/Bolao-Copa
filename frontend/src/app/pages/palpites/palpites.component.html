@@ -1,0 +1,55 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <h1>Meus palpites</h1>
+      <p>Acompanhe seus palpites e pontos conquistados.</p>
+    </div>
+    <div class="total card">
+      <span>Total</span>
+      <strong>{{ totalPoints() }} pts</strong>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <p class="state">Carregando palpites...</p>
+  } @else if (error()) {
+    <p class="state error">{{ error() }}</p>
+  } @else if (predictions().length === 0) {
+    <div class="empty card">
+      <p>Voce ainda nao fez nenhum palpite.</p>
+      <a routerLink="/jogos">Ir para os jogos</a>
+    </div>
+  } @else {
+    <div class="list">
+      @for (item of predictions(); track item.id) {
+        <article class="item card">
+          <div class="top">
+            <strong>{{ item.homeTeam }} x {{ item.awayTeam }}</strong>
+            @if (item.location) {
+              <small class="location">{{ item.location }}</small>
+            }
+            <span>{{ formatDateTime(item.kickoffAt) }}</span>
+          </div>
+
+          <div class="scores">
+            <div>
+              <small>Seu palpite</small>
+              <p>{{ item.predictedHomeScore }} x {{ item.predictedAwayScore }}</p>
+            </div>
+
+            @if (item.matchStatus === 'FINALIZADO') {
+              <div>
+                <small>Resultado</small>
+                <p>{{ item.actualHomeScore }} x {{ item.actualAwayScore }}</p>
+              </div>
+            }
+          </div>
+
+          <div class="points" [class.scored]="item.pointsEarned > 0">
+            {{ item.pointsEarned }} pts
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

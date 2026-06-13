@@ -1,0 +1,222 @@
+.page-header {
+  margin-bottom: 3rem;
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    background: linear-gradient(to right, var(--text), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+}
+
+.rules {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  
+  strong {
+    color: var(--accent-light);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  span {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+}
+
+.day-block {
+  margin-bottom: 4rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+  }
+}
+
+.match-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .match-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.match-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  &.finished {
+    opacity: 0.8;
+    &:hover { transform: none; border-color: var(--border); }
+  }
+}
+
+.match-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+
+  .location {
+    color: var(--accent-light);
+  }
+
+  .status {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+
+    &[data-status='EM_ANDAMENTO'] {
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
+    &[data-status='FINALIZADO'] {
+      color: var(--gold);
+    }
+  }
+}
+
+.teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+
+  .team {
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .versus {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    background: var(--border);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+}
+
+.result {
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin: 0;
+}
+
+.prediction-form {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: end;
+
+  label {
+    grid-column: span 2;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+}
+
+.score-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  input {
+    width: 60px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 800;
+    outline: none;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  span {
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+}
+
+.success, .error {
+  grid-column: span 2;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.success { color: var(--success); }
+.error { color: var(--danger); }
+
+.locked {
+  padding: 1rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}

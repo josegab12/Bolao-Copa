@@ -1,0 +1,35 @@
+@if (auth.isLoggedIn()) {
+  <header class="topbar">
+    <a routerLink="/jogos" class="brand">
+      <span class="brand-icon">⚽</span>
+      DETETIVES Bolão Copa 2026
+    </a>
+
+    <nav>
+      <a routerLink="/jogos" routerLinkActive="active">Jogos</a>
+      <a routerLink="/palpites" routerLinkActive="active">Meus palpites</a>
+      <a routerLink="/ranking" routerLinkActive="active">Ranking</a>
+      <a routerLink="/admin" routerLinkActive="active" class="admin-link">Admin</a>
+    </nav>
+
+    <div class="user-area">
+      <div class="profile-pic-container">
+        @if (auth.currentUser()?.avatar) {
+          <img [src]="auth.currentUser()?.avatar" alt="Foto de perfil" class="avatar" />
+        } @else {
+          <div class="avatar-placeholder">🕵️</div>
+        }
+        <label class="upload-btn">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
+          <span class="edit-icon">📸</span>
+        </label>
+      </div>
+      <span>{{ auth.currentUser()?.name }}</span>
+      <button type="button" class="btn-ghost" (click)="auth.logout()">Sair</button>
+    </div>
+  </header>
+}
+
+<main [class.full]="!auth.isLoggedIn()">
+  <router-outlet />
+</main>

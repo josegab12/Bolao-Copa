@@ -1,0 +1,114 @@
+@if (!admin.isAdmin()) {
+  <section class="admin-login page">
+    <div class="login-card card">
+      <div class="login-header">
+        <span class="badge">Admin</span>
+        <h1>Area administrativa</h1>
+        <p>Digite a senha para registrar resultados dos jogos.</p>
+      </div>
+
+      <form (ngSubmit)="unlock()" class="login-form">
+        <label for="pin">Senha de admin</label>
+        <input
+          id="pin"
+          type="password"
+          [(ngModel)]="pin"
+          name="pin"
+          placeholder="Senha"
+          autocomplete="current-password"
+        />
+
+        @if (pinError()) {
+          <p class="error">{{ pinError() }}</p>
+        }
+
+        <button type="submit" class="btn-primary">Entrar como admin</button>
+      </form>
+    </div>
+  </section>
+} @else {
+  <section class="page">
+    <header class="page-header">
+      <div>
+        <h1>Administrar resultados</h1>
+        <p>Registre o placar final para recalcular os pontos do bolao.</p>
+      </div>
+      <button type="button" class="btn-ghost" (click)="logoutAdmin()">Sair do admin</button>
+    </header>
+
+    @if (loading()) {
+      <p class="state">Carregando jogos...</p>
+    } @else if (pageError()) {
+      <p class="state error">{{ pageError() }}</p>
+    } @else {
+      @for (day of days(); track day.date) {
+        <section class="day-block">
+          <h2>{{ formatDate(day.date) }}</h2>
+
+          <div class="match-list">
+            @for (match of day.matches; track match.id) {
+              <article class="match-card card" [class.finished]="match.status === 'FINALIZADO'">
+                <div class="match-meta">
+                  <span>Grupo {{ match.groupName }}</span>
+                  <span class="status" [attr.data-status]="match.status">{{ statusLabel(match.status) }}</span>
+                  <span>{{ formatTime(match.kickoffAt) }}</span>
+                </div>
+
+                <div class="teams">
+                  <span>{{ match.homeTeam }}</span>
+                  <span class="versus">x</span>
+                  <span>{{ match.awayTeam }}</span>
+                </div>
+
+                <div class="result-form">
+                  <label>Placar final</label>
+                  <div class="score-inputs">
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      [ngModel]="getForm(match.id).homeScore"
+                      (ngModelChange)="updateForm(match.id, { homeScore: $event })"
+                      [disabled]="getForm(match.id).saving"
+                    />
+                    <span>x</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      [ngModel]="getForm(match.id).awayScore"
+                      (ngModelChange)="updateForm(match.id, { awayScore: $event })"
+                      [disabled]="getForm(match.id).saving"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    class="btn-primary"
+                    (click)="saveResult(match)"
+                    [disabled]="getForm(match.id).saving"
+                  >
+                    {{
+                      getForm(match.id).saving
+                        ? 'Salvando...'
+                        : match.status === 'FINALIZADO'
+                          ? 'Atualizar resultado'
+                          : 'Registrar resultado'
+                    }}
+                  </button>
+
+                  @if (getForm(match.id).success) {
+                    <p class="success">{{ getForm(match.id).success }}</p>
+                  }
+                  @if (getForm(match.id).error) {
+                    <p class="error">{{ getForm(match.id).error }}</p>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      }
+    }
+  </section>
+}

@@ -1,0 +1,38 @@
+<section class="login-page">
+  <div class="login-card card">
+    <div class="login-header">
+      <div class="brand-icon">🕵️‍♂️</div>
+      <h1>DETETIVES Bolão</h1>
+      <p>Investigue as probabilidades e junte-se à disputa pela Copa 2026.</p>
+    </div>
+
+    <form (ngSubmit)="submit()" class="login-form">
+      <div class="field">
+        <label for="name">Nome do Investigador</label>
+        <input
+          id="name"
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+          maxlength="100"
+          placeholder="Como quer ser chamado?"
+          autocomplete="nickname"
+          [disabled]="loading()"
+          required
+        />
+      </div>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Iniciando Investigação...' : 'Entrar no Bolão' }}
+      </button>
+    </form>
+
+    <p class="admin-access">
+      Possui acesso restrito? <a routerLink="/admin">Área Administrativa</a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,41 @@
+<section class="page">
+  <header class="page-header">
+    <h1>Ranking</h1>
+    <p>Classificacao geral do bolao.</p>
+  </header>
+
+  @if (loading()) {
+    <p class="state">Carregando ranking...</p>
+  } @else if (error()) {
+    <p class="state error">{{ error() }}</p>
+  } @else if (ranking().length === 0) {
+    <div class="empty card">
+      <p>Ninguem pontuou ainda. Seja o primeiro!</p>
+    </div>
+  } @else {
+    <div class="table card">
+      <div class="row header">
+        <span>#</span>
+        <span>Jogador</span>
+        <span>Pontos</span>
+      </div>
+
+      @for (entry of ranking(); track entry.userId) {
+        <div class="row" [class.me]="isCurrentUser(entry)">
+          <span class="position" [class.top-1]="entry.position === 1" [class.top-2]="entry.position === 2" [class.top-3]="entry.position === 3">
+            {{ entry.position }}
+          </span>
+          <div class="player-info">
+            @if (entry.avatar) {
+              <img [src]="entry.avatar" alt="Avatar" class="mini-avatar" />
+            } @else {
+              <div class="mini-avatar-placeholder">🕵️</div>
+            }
+            <span class="name">{{ entry.name }}</span>
+          </div>
+          <span class="points">{{ entry.totalPoints }} pts</span>
+        </div>
+      }
+    </div>
+  }
+</section>
