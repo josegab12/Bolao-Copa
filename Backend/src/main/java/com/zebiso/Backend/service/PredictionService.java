@@ -104,6 +104,12 @@ public class PredictionService {
         }
     }
 
+    @Transactional
+    public void resetUserPoints(UUID userId) {
+        userService.findById(userId);
+        predictionRepository.deleteByUserId(userId);
+    }
+
     private PredictionResponse toResponse(Prediction prediction) {
         Match match = prediction.getMatch();
         return new PredictionResponse(

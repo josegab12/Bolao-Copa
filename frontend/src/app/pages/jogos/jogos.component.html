@@ -1,7 +1,7 @@
 <section class="page">
   <header class="page-header">
     <div>
-      <h1>DETETIVES Bolão</h1>
+      <h1>DETETIVES - Bolão</h1>
       <p>Investigue as chances e registre seus palpites antes do apito inicial.</p>
 
       @if (rules(); as scoring) {
@@ -19,13 +19,100 @@
   } @else if (error()) {
     <p class="state error">{{ error() }}</p>
   } @else {
-    @for (day of days(); track day.date) {
+    @if (todayDay(); as today) {
+      <section class="day-block is-today featured">
+        <div class="featured-header">
+          <span class="pulse-icon"></span>
+          <h2>JOGOS DE HOJE • {{ formatDate(today.date) }}</h2>
+        </div>
+
+        <div class="match-list">
+          @for (match of today.matches; track match.id) {
+            <article class="match-card card today" [class.finished]="match.status === 'FINALIZADO'">
+              <div class="match-meta">
+                <span class="group">Grupo {{ match.groupName }}</span>
+                @if (match.location) {
+                  <span class="location">{{ match.location }}</span>
+                }
+                <span class="status" [attr.data-status]="match.status">{{ statusLabel(match.status) }}</span>
+              </div>
+
+              <div class="teams">
+                <span class="team">{{ match.homeTeam }}</span>
+                <span class="versus">VS</span>
+                <span class="team">{{ match.awayTeam }}</span>
+              </div>
+
+              @if (match.status === 'FINALIZADO') {
+                <p class="result">
+                  {{ match.homeScore }} - {{ match.awayScore }}
+                </p>
+              }
+
+              @if (canPredict(match)) {
+                <div class="prediction-form">
+                  <label>Seu Palpite de Detetive</label>
+                  <div class="score-inputs">
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      [ngModel]="getForm(match.id).homeScore"
+                      (ngModelChange)="updateForm(match.id, { homeScore: $event, saved: false })"
+                      [disabled]="getForm(match.id).saving"
+                      placeholder="-"
+                    />
+                    <span>:</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      [ngModel]="getForm(match.id).awayScore"
+                      (ngModelChange)="updateForm(match.id, { awayScore: $event, saved: false })"
+                      [disabled]="getForm(match.id).saving"
+                      placeholder="-"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    class="btn-primary"
+                    (click)="savePrediction(match)"
+                    [disabled]="getForm(match.id).saving"
+                  >
+                    {{ getForm(match.id).saving ? 'Salvando...' : 'Confirmar' }}
+                  </button>
+
+                  @if (getForm(match.id).saved && !getForm(match.id).error) {
+                    <p class="success">✓ Palpite registrado!</p>
+                  }
+                  @if (getForm(match.id).error) {
+                    <p class="error">⚠ {{ getForm(match.id).error }}</p>
+                  }
+                </div>
+              } @else if (match.status !== 'FINALIZADO') {
+                <p class="locked">Acesso restrito: Palpites encerrados.</p>
+              }
+            </article>
+          }
+        </div>
+      </section>
+
+      <div class="separator">
+        <span>Calendário Completo</span>
+      </div>
+    }
+
+    @for (day of otherDays(); track day.date) {
       <section class="day-block">
         <h2>{{ formatDate(day.date) }}</h2>
+  ...
 
         <div class="match-list">
           @for (match of day.matches; track match.id) {
-            <article class="match-card card" [class.finished]="match.status === 'FINALIZADO'">
+            <article class="match-card card"
+              [class.finished]="match.status === 'FINALIZADO'"
+              [class.today]="isToday(day.date)">
               <div class="match-meta">
                 <span class="group">Grupo {{ match.groupName }}</span>
                 @if (match.location) {

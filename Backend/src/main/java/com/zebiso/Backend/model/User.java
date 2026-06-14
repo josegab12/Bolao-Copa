@@ -26,6 +26,9 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String avatar;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean hiddenFromRanking = false;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -55,6 +58,14 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isHiddenFromRanking() {
+        return hiddenFromRanking;
+    }
+
+    public void setHiddenFromRanking(boolean hiddenFromRanking) {
+        this.hiddenFromRanking = hiddenFromRanking;
     }
 
     public LocalDateTime getCreatedAt() {

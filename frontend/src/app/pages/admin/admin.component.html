@@ -30,84 +30,148 @@
   <section class="page">
     <header class="page-header">
       <div>
-        <h1>Administrar resultados</h1>
-        <p>Registre o placar final para recalcular os pontos do bolao.</p>
+        <h1>Area do Admin</h1>
+        <p>Gerencie resultados e visibilidade dos usuarios.</p>
       </div>
       <button type="button" class="btn-ghost" (click)="logoutAdmin()">Sair do admin</button>
     </header>
 
-    @if (loading()) {
-      <p class="state">Carregando jogos...</p>
-    } @else if (pageError()) {
-      <p class="state error">{{ pageError() }}</p>
-    } @else {
-      @for (day of days(); track day.date) {
-        <section class="day-block">
-          <h2>{{ formatDate(day.date) }}</h2>
+    <nav class="admin-tabs">
+      <button
+        type="button"
+        [class.active]="activeTab() === 'jogos'"
+        (click)="activeTab.set('jogos')"
+      >
+        Resultados
+      </button>
+      <button
+        type="button"
+        [class.active]="activeTab() === 'usuarios'"
+        (click)="activeTab.set('usuarios')"
+      >
+        Usuarios
+      </button>
+    </nav>
 
-          <div class="match-list">
-            @for (match of day.matches; track match.id) {
-              <article class="match-card card" [class.finished]="match.status === 'FINALIZADO'">
-                <div class="match-meta">
-                  <span>Grupo {{ match.groupName }}</span>
-                  <span class="status" [attr.data-status]="match.status">{{ statusLabel(match.status) }}</span>
-                  <span>{{ formatTime(match.kickoffAt) }}</span>
-                </div>
+    @if (activeTab() === 'jogos') {
+      @if (loading()) {
+        <p class="state">Carregando jogos...</p>
+      } @else if (pageError()) {
+        <p class="state error">{{ pageError() }}</p>
+      } @else {
+        @for (day of days(); track day.date) {
+          <section class="day-block" [class.is-today]="isToday(day.date)">
+            <h2>
+              {{ formatDate(day.date) }}
+              @if (isToday(day.date)) {
+                <span class="today-badge">HOJE</span>
+              }
+            </h2>
 
-                <div class="teams">
-                  <span>{{ match.homeTeam }}</span>
-                  <span class="versus">x</span>
-                  <span>{{ match.awayTeam }}</span>
-                </div>
+            <div class="match-list">
+              @for (match of day.matches; track match.id) {
+                <article class="match-card card" 
+                  [class.finished]="match.status === 'FINALIZADO'"
+                  [class.today]="isToday(day.date)">
+                  <div class="match-meta">
 
-                <div class="result-form">
-                  <label>Placar final</label>
-                  <div class="score-inputs">
-                    <input
-                      type="number"
-                      min="0"
-                      max="20"
-                      [ngModel]="getForm(match.id).homeScore"
-                      (ngModelChange)="updateForm(match.id, { homeScore: $event })"
-                      [disabled]="getForm(match.id).saving"
-                    />
-                    <span>x</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="20"
-                      [ngModel]="getForm(match.id).awayScore"
-                      (ngModelChange)="updateForm(match.id, { awayScore: $event })"
-                      [disabled]="getForm(match.id).saving"
-                    />
+                    <span>Grupo {{ match.groupName }}</span>
+                    <span class="status" [attr.data-status]="match.status">{{ statusLabel(match.status) }}</span>
+                    <span>{{ formatTime(match.kickoffAt) }}</span>
                   </div>
 
-                  <button
-                    type="button"
-                    class="btn-primary"
-                    (click)="saveResult(match)"
-                    [disabled]="getForm(match.id).saving"
-                  >
-                    {{
-                      getForm(match.id).saving
-                        ? 'Salvando...'
-                        : match.status === 'FINALIZADO'
-                          ? 'Atualizar resultado'
-                          : 'Registrar resultado'
-                    }}
-                  </button>
+                  <div class="teams">
+                    <span>{{ match.homeTeam }}</span>
+                    <span class="versus">x</span>
+                    <span>{{ match.awayTeam }}</span>
+                  </div>
 
-                  @if (getForm(match.id).success) {
-                    <p class="success">{{ getForm(match.id).success }}</p>
-                  }
-                  @if (getForm(match.id).error) {
-                    <p class="error">{{ getForm(match.id).error }}</p>
-                  }
-                </div>
-              </article>
-            }
-          </div>
-        </section>
+                  <div class="result-form">
+                    <label>Placar final</label>
+                    <div class="score-inputs">
+                      <input
+                        type="number"
+                        min="0"
+                        max="20"
+                        [ngModel]="getForm(match.id).homeScore"
+                        (ngModelChange)="updateForm(match.id, { homeScore: $event })"
+                        [disabled]="getForm(match.id).saving"
+                      />
+                      <span>x</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="20"
+                        [ngModel]="getForm(match.id).awayScore"
+                        (ngModelChange)="updateForm(match.id, { awayScore: $event })"
+                        [disabled]="getForm(match.id).saving"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      class="btn-primary"
+                      (click)="saveResult(match)"
+                      [disabled]="getForm(match.id).saving"
+                    >
+                      {{
+                        getForm(match.id).saving
+                          ? 'Salvando...'
+                          : match.status === 'FINALIZADO'
+                            ? 'Atualizar resultado'
+                            : 'Registrar resultado'
+                      }}
+                    </button>
+
+                    @if (getForm(match.id).success) {
+                      <p class="success">{{ getForm(match.id).success }}</p>
+                    }
+                    @if (getForm(match.id).error) {
+                      <p class="error">{{ getForm(match.id).error }}</p>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          </section>
+        }
+      }
+    } @else {
+      @if (loadingUsers()) {
+        <p class="state">Carregando usuarios...</p>
+      } @else {
+        <div class="user-list card">
+          @for (user of users(); track user.id) {
+            <div class="user-item">
+              <div class="user-info">
+                @if (user.avatar) {
+                  <img [src]="user.avatar" class="avatar-small" alt="" />
+                } @else {
+                  <div class="avatar-placeholder small">{{ user.name[0] }}</div>
+                }
+                <span [class.hidden-text]="user.hiddenFromRanking">{{ user.name }}</span>
+              </div>
+              <div class="user-actions">
+                <button
+                  type="button"
+                  class="btn-danger-outline"
+                  (click)="resetUserPoints(user)"
+                >
+                  Zerar Pontos
+                </button>
+                <button
+                  type="button"
+                  [class]="user.hiddenFromRanking ? 'btn-ghost' : 'btn-outline'"
+                  (click)="toggleUserVisibility(user)"
+                >
+                  {{ user.hiddenFromRanking ? 'Mostrar no Ranking' : 'Ocultar do Ranking' }}
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <p class="state">Nenhum usuario cadastrado.</p>
+          }
+        </div>
       }
     }
   </section>

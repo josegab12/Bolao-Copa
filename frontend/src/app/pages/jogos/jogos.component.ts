@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatchService } from '../../core/services/match.service';
@@ -30,6 +30,9 @@ export class JogosComponent implements OnInit {
   loading = signal(true);
   error = signal('');
   forms = signal<Record<string, MatchForm>>({});
+
+  todayDay = computed(() => this.days().find(d => this.isToday(d.date)));
+  otherDays = computed(() => this.days().filter(d => !this.isToday(d.date)));
 
   ngOnInit(): void {
     this.loadData();
@@ -69,6 +72,11 @@ export class JogosComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  isToday(date: string): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    return date === today;
   }
 
   statusLabel(status: Match['status']): string {

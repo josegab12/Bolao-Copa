@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatchService } from '../../core/services/match.service';
 import { AdminService } from '../../core/services/admin.service';
-import { DayMatches, Match } from '../../core/models/bolao.models';
+import { UserAdminService } from '../../core/services/user-admin.service';
+import { DayMatches, Match, User } from '../../core/models/bolao.models';
 import { HttpErrorResponse } from '@angular/common/http';
 
 interface ResultForm {
@@ -23,18 +24,23 @@ interface ResultForm {
 })
 export class AdminComponent implements OnInit {
   private readonly matchService = inject(MatchService);
+  private readonly userAdminService = inject(UserAdminService);
   readonly admin = inject(AdminService);
 
   pin = '';
   pinError = signal('');
   days = signal<DayMatches[]>([]);
+  users = signal<User[]>([]);
   loading = signal(false);
+  loadingUsers = signal(false);
   pageError = signal('');
   forms = signal<Record<string, ResultForm>>({});
 
+  activeTab = signal<'jogos' | 'usuarios'>('jogos');
+
   ngOnInit(): void {
     if (this.admin.isAdmin()) {
-      this.loadMatches();
+      this.loadData();
     }
   }
 
@@ -45,13 +51,19 @@ export class AdminComponent implements OnInit {
       return;
     }
     this.pin = '';
-    this.loadMatches();
+    this.loadData();
   }
 
   logoutAdmin(): void {
     this.admin.logout();
     this.days.set([]);
+    this.users.set([]);
     this.forms.set({});
+  }
+
+  loadData(): void {
+    this.loadMatches();
+    this.loadUsers();
   }
 
   loadMatches(): void {
@@ -71,6 +83,37 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  loadUsers(): void {
+    this.loadingUsers.set(true);
+    this.userAdminService.listAll().subscribe({
+      next: (users) => {
+        this.users.set(users);
+        this.loadingUsers.set(false);
+      },
+      error: () => {
+        this.loadingUsers.set(false);
+      }
+    });
+  }
+
+  toggleUserVisibility(user: User): void {
+    this.userAdminService.toggleVisibility(user.id).subscribe({
+      next: (updated) => {
+        this.users.update(users => users.map(u => u.id === updated.id ? updated : u));
+      }
+    });
+  }
+
+  resetUserPoints(user: User): void {
+    if (confirm(`Deseja realmente zerar todos os pontos de "${user.name}"? Isso apagara todos os seus palpites.`)) {
+      this.userAdminService.resetPoints(user.id).subscribe({
+        next: () => {
+          alert(`Pontos de ${user.name} foram zerados.`);
+        }
+      });
+    }
+  }
+
   formatDate(date: string): string {
     return new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
       weekday: 'long',
@@ -84,6 +127,11 @@ export class AdminComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  isToday(date: string): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    return date === today;
   }
 
   statusLabel(status: Match['status']): string {

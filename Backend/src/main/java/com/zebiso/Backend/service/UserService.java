@@ -28,18 +28,35 @@ public class UserService {
         User user = userRepository.findByNameIgnoreCase(trimmed)
                 .orElseGet(() -> userRepository.save(new User(trimmed)));
 
-        return new UserResponse(user.getId(), user.getName(), user.getAvatar());
+        return mapToResponse(user);
     }
 
     @Transactional
     public UserResponse updateAvatar(UUID userId, String avatarBase64) {
         User user = findById(userId);
         user.setAvatar(avatarBase64);
-        return new UserResponse(user.getId(), user.getName(), user.getAvatar());
+        return mapToResponse(user);
+    }
+
+    @Transactional
+    public UserResponse toggleRankingVisibility(UUID userId) {
+        User user = findById(userId);
+        user.setHiddenFromRanking(!user.isHiddenFromRanking());
+        return mapToResponse(user);
+    }
+
+    public java.util.List<UserResponse> listAll() {
+        return userRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     public User findById(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("Usuario nao encontrado"));
+    }
+
+    private UserResponse mapToResponse(User user) {
+        return new UserResponse(user.getId(), user.getName(), user.getAvatar(), user.isHiddenFromRanking());
     }
 }

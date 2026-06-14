@@ -2,5 +2,5 @@ package com.zebiso.Backend.dto;
 
 import java.util.UUID;
 
-public record UserResponse(UUID id, String name, String avatar) {
+public record UserResponse(UUID id, String name, String avatar, boolean hiddenFromRanking) {
 }
