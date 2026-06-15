@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Prediction, ScoringRules } from '../models/bolao.models';
+import { Prediction, ScoringRules, MatchPrediction } from '../models/bolao.models';
 
 @Injectable({ providedIn: 'root' })
 export class PredictionService {
@@ -17,6 +17,10 @@ export class PredictionService {
 
   listMine() {
     return this.http.get<Prediction[]>(`${environment.apiUrl}/palpites/meus`);
+  }
+
+  listByMatch(matchId: string) {
+    return this.http.get<MatchPrediction[]>(`${environment.apiUrl}/jogos/${matchId}/palpites`);
   }
 
   getScoringRules() {

@@ -1,5 +1,6 @@
 package com.zebiso.Backend.controller;
 
+import com.zebiso.Backend.dto.MatchPredictionResponse;
 import com.zebiso.Backend.dto.PredictionRequest;
 import com.zebiso.Backend.dto.PredictionResponse;
 import com.zebiso.Backend.dto.RankingEntryResponse;
@@ -8,6 +9,7 @@ import com.zebiso.Backend.service.PredictionService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,6 +41,11 @@ public class PredictionController {
     @GetMapping("/palpites/meus")
     public ResponseEntity<List<PredictionResponse>> myPredictions(@RequestHeader("X-User-Id") UUID userId) {
         return ResponseEntity.ok(predictionService.listByUser(userId));
+    }
+
+    @GetMapping("/jogos/{matchId}/palpites")
+    public ResponseEntity<List<MatchPredictionResponse>> matchPredictions(@PathVariable UUID matchId) {
+        return ResponseEntity.ok(predictionService.listByMatch(matchId));
     }
 
     @GetMapping("/ranking")

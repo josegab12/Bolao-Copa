@@ -48,6 +48,16 @@ export interface RankingEntry {
   totalPoints: number;
 }
 
+export interface MatchPrediction {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
+  predictedHomeScore: number;
+  predictedAwayScore: number;
+  pointsEarned: number;
+}
+
 export interface ScoringRules {
   description: string;
   pontosResultadoExato: number;

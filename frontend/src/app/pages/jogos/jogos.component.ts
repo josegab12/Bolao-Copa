@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatchService } from '../../core/services/match.service';
 import { PredictionService } from '../../core/services/prediction.service';
-import { DayMatches, Match, Prediction, ScoringRules } from '../../core/models/bolao.models';
+import { DayMatches, Match, Prediction, ScoringRules, MatchPrediction } from '../../core/models/bolao.models';
 import { HttpErrorResponse } from '@angular/common/http';
 
 interface MatchForm {
@@ -30,6 +30,11 @@ export class JogosComponent implements OnInit {
   loading = signal(true);
   error = signal('');
   forms = signal<Record<string, MatchForm>>({});
+
+  // Ver palpites dos outros
+  selectedMatch = signal<Match | null>(null);
+  matchPredictions = signal<MatchPrediction[]>([]);
+  loadingMatchPredictions = signal(false);
 
   todayDay = computed(() => this.days().find(d => this.isToday(d.date)));
   otherDays = computed(() => this.days().filter(d => !this.isToday(d.date)));
@@ -131,6 +136,27 @@ export class JogosComponent implements OnInit {
         });
       }
     });
+  }
+
+  viewOthers(match: Match): void {
+    this.selectedMatch.set(match);
+    this.loadingMatchPredictions.set(true);
+    this.matchPredictions.set([]);
+
+    this.predictionService.listByMatch(match.id).subscribe({
+      next: (preds) => {
+        this.matchPredictions.set(preds);
+        this.loadingMatchPredictions.set(false);
+      },
+      error: () => {
+        this.loadingMatchPredictions.set(false);
+      }
+    });
+  }
+
+  closeModal(): void {
+    this.selectedMatch.set(null);
+    this.matchPredictions.set([]);
   }
 
   private loadPredictions(): void {

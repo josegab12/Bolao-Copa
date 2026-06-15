@@ -38,6 +38,12 @@
                 <span class="status" [attr.data-status]="match.status">{{ statusLabel(match.status) }}</span>
               </div>
 
+              <div class="match-actions">
+                <button type="button" class="btn-ghost btn-sm" (click)="viewOthers(match)">
+                  🔍 Ver palpites
+                </button>
+              </div>
+
               <div class="teams">
                 <span class="team">{{ match.homeTeam }}</span>
                 <span class="versus">VS</span>
@@ -123,6 +129,12 @@
                 <span class="status" [attr.data-status]="match.status">{{ statusLabel(match.status) }}</span>
               </div>
 
+              <div class="match-actions">
+                <button type="button" class="btn-ghost btn-sm" (click)="viewOthers(match)">
+                  🔍 Ver palpites
+                </button>
+              </div>
+
               <div class="teams">
                 <span class="team">{{ match.homeTeam }}</span>
                 <span class="versus">VS</span>
@@ -184,5 +196,48 @@
         </div>
       </section>
     }
+  }
+
+  @if (selectedMatch(); as match) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content card" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <div class="modal-title">
+            <h3>Palpites dos Detetives</h3>
+            <p>{{ match.homeTeam }} vs {{ match.awayTeam }}</p>
+          </div>
+          <button class="btn-ghost" (click)="closeModal()">✕</button>
+        </header>
+
+        <div class="modal-body">
+          @if (loadingMatchPredictions()) {
+            <p class="state">Carregando palpites...</p>
+          } @else if (matchPredictions().length === 0) {
+            <p class="state">Ninguém palpitou neste jogo ainda.</p>
+          } @else {
+            <div class="predictions-grid">
+              @for (p of matchPredictions(); track p.id) {
+                <div class="prediction-row">
+                  <div class="user-info">
+                    @if (p.userAvatar) {
+                      <img [src]="p.userAvatar" alt="" class="mini-avatar" />
+                    } @else {
+                      <div class="mini-avatar-placeholder">🕵️</div>
+                    }
+                    <span>{{ p.userName }}</span>
+                  </div>
+                  <div class="prediction-score">
+                    <strong>{{ p.predictedHomeScore }} - {{ p.predictedAwayScore }}</strong>
+                  </div>
+                  <div class="points-badge" [class.has-points]="p.pointsEarned > 0">
+                    {{ p.pointsEarned }} pts
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
   }
 </section>

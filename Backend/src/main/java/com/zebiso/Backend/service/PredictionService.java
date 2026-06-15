@@ -1,5 +1,6 @@
 package com.zebiso.Backend.service;
 
+import com.zebiso.Backend.dto.MatchPredictionResponse;
 import com.zebiso.Backend.dto.PredictionRequest;
 import com.zebiso.Backend.dto.PredictionResponse;
 import com.zebiso.Backend.dto.RankingEntryResponse;
@@ -70,6 +71,20 @@ public class PredictionService {
         userService.findById(userId);
         return predictionRepository.findByUserIdOrderByMatch_KickoffAtAsc(userId).stream()
                 .map(this::toResponse)
+                .toList();
+    }
+
+    public List<MatchPredictionResponse> listByMatch(UUID matchId) {
+        return predictionRepository.findByMatchId(matchId).stream()
+                .map(p -> new MatchPredictionResponse(
+                        p.getId(),
+                        p.getUser().getId(),
+                        p.getUser().getName(),
+                        p.getUser().getAvatar(),
+                        p.getPredictedHomeScore(),
+                        p.getPredictedAwayScore(),
+                        p.getPointsEarned()
+                ))
                 .toList();
     }
 
