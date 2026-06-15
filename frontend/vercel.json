@@ -1,7 +1,7 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://seu-backend-producao.com/api/$1" },
+    { "source": "/api/(.*)", "destination": "https://bolao-backend-tj96.onrender.com" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
