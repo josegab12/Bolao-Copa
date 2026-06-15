@@ -180,6 +180,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -188,6 +190,14 @@
 
   .location {
     color: var(--accent-light);
+  }
+
+  .time {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 800;
   }
 
   .status {

@@ -30,6 +30,7 @@
           @for (match of today.matches; track match.id) {
             <article class="match-card card today" [class.finished]="match.status === 'FINALIZADO'">
               <div class="match-meta">
+                <span class="time">{{ formatTime(match.kickoffAt) }}</span>
                 <span class="group">Grupo {{ match.groupName }}</span>
                 @if (match.location) {
                   <span class="location">{{ match.location }}</span>
@@ -114,6 +115,7 @@
               [class.finished]="match.status === 'FINALIZADO'"
               [class.today]="isToday(day.date)">
               <div class="match-meta">
+                <span class="time">{{ formatTime(match.kickoffAt) }}</span>
                 <span class="group">Grupo {{ match.groupName }}</span>
                 @if (match.location) {
                   <span class="location">{{ match.location }}</span>
