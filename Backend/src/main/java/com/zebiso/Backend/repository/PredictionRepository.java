@@ -19,11 +19,12 @@ public interface PredictionRepository extends JpaRepository<Prediction, UUID> {
     void deleteByUserId(UUID userId);
 
     @Query("""
-            SELECT p.user.id AS userId, p.user.name AS name, p.user.avatar AS avatar, COALESCE(SUM(p.pointsEarned), 0) AS totalPoints
-            FROM Prediction p
-            WHERE p.user.hiddenFromRanking = false
-            GROUP BY p.user.id, p.user.name, p.user.avatar
-            ORDER BY totalPoints DESC, name ASC
+            SELECT u.id AS userId, u.name AS name, u.avatar AS avatar, COALESCE(SUM(p.pointsEarned), 0) AS totalPoints
+            FROM User u
+            LEFT JOIN Prediction p ON p.user = u
+            WHERE u.hiddenFromRanking = false
+            GROUP BY u.id, u.name, u.avatar
+            ORDER BY totalPoints DESC, u.name ASC
             """)
     List<RankingProjection> findRanking();
 }

@@ -76,6 +76,7 @@ public class PredictionService {
 
     public List<MatchPredictionResponse> listByMatch(UUID matchId) {
         return predictionRepository.findByMatchId(matchId).stream()
+                .filter(p -> !p.getUser().isHiddenFromRanking())
                 .map(p -> new MatchPredictionResponse(
                         p.getId(),
                         p.getUser().getId(),
