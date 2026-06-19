@@ -69,7 +69,7 @@ public class PredictionService {
 
     public List<PredictionResponse> listByUser(UUID userId) {
         userService.findById(userId);
-        return predictionRepository.findByUserIdOrderByMatch_KickoffAtAsc(userId).stream()
+        return predictionRepository.findByUserIdOrderByUpdatedAtDesc(userId).stream()
                 .map(this::toResponse)
                 .toList();
     }

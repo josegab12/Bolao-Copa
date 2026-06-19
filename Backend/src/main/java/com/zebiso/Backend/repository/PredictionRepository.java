@@ -12,7 +12,7 @@ public interface PredictionRepository extends JpaRepository<Prediction, UUID> {
 
     Optional<Prediction> findByUserIdAndMatchId(UUID userId, UUID matchId);
 
-    List<Prediction> findByUserIdOrderByMatch_KickoffAtAsc(UUID userId);
+    List<Prediction> findByUserIdOrderByUpdatedAtDesc(UUID userId);
 
     List<Prediction> findByMatchId(UUID matchId);
 
