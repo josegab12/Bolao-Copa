@@ -20,4 +20,8 @@ export class UserAdminService {
   resetPoints(userId: string) {
     return this.http.patch<void>(`${this.baseUrl}/${userId}/reset-pontos`, {});
   }
+
+  addPoints(userId: string, points: number) {
+    return this.http.patch<User>(`${this.baseUrl}/${userId}/adicionar-pontos`, { points });
+  }
 }

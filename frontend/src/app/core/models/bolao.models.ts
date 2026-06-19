@@ -3,6 +3,7 @@ export interface User {
   name: string;
   avatar?: string;
   hiddenFromRanking?: boolean;
+  bonusPoints?: number;
 }
 
 export interface Match {

@@ -140,7 +140,7 @@ main() {
   echo "App pronto para uso:"
   echo "  Frontend: http://localhost:${FRONTEND_PORT}"
   echo "  Backend:  http://localhost:${BACKEND_PORT}/api"
-  echo "  Admin:    http://localhost:${FRONTEND_PORT}/admin (senha: admin2026)"
+  echo "  Admin:    http://localhost:${FRONTEND_PORT}/admin (senha: 963852741jO761415xp)"
   echo ""
   echo "Logs:"
   echo "  $BACKEND_LOG"

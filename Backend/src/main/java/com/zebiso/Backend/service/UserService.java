@@ -56,7 +56,14 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException("Usuario nao encontrado"));
     }
 
+    @Transactional
+    public UserResponse addPoints(UUID userId, int points) {
+        User user = findById(userId);
+        user.setBonusPoints(user.getBonusPoints() + points);
+        return mapToResponse(userRepository.save(user));
+    }
+
     private UserResponse mapToResponse(User user) {
-        return new UserResponse(user.getId(), user.getName(), user.getAvatar(), user.isHiddenFromRanking());
+        return new UserResponse(user.getId(), user.getName(), user.getAvatar(), user.isHiddenFromRanking(), user.getBonusPoints());
     }
 }

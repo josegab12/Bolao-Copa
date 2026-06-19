@@ -29,6 +29,9 @@ public class User {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean hiddenFromRanking = false;
 
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int bonusPoints = 0;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -66,6 +69,14 @@ public class User {
 
     public void setHiddenFromRanking(boolean hiddenFromRanking) {
         this.hiddenFromRanking = hiddenFromRanking;
+    }
+
+    public int getBonusPoints() {
+        return bonusPoints;
+    }
+
+    public void setBonusPoints(int bonusPoints) {
+        this.bonusPoints = bonusPoints;
     }
 
     public LocalDateTime getCreatedAt() {

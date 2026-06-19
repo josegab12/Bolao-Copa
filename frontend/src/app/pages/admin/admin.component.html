@@ -149,9 +149,30 @@
                 } @else {
                   <div class="avatar-placeholder small">{{ user.name[0] }}</div>
                 }
-                <span [class.hidden-text]="user.hiddenFromRanking">{{ user.name }}</span>
+                <div class="user-details">
+                  <span [class.hidden-text]="user.hiddenFromRanking">{{ user.name }}</span>
+                  <span class="user-bonus-badge">
+                    Pontos Extras: <strong>{{ user.bonusPoints ?? 0 }}</strong>
+                  </span>
+                </div>
               </div>
               <div class="user-actions">
+                <div class="bonus-action-form">
+                  <input
+                    #bonusInput
+                    type="number"
+                    placeholder="+/- Pontos"
+                    class="bonus-input"
+                  />
+                  <button
+                    type="button"
+                    class="btn-primary-outline"
+                    (click)="adjustPoints(user, +bonusInput.value); bonusInput.value = ''"
+                  >
+                    Ajustar
+                  </button>
+                </div>
+
                 <button
                   type="button"
                   class="btn-danger-outline"

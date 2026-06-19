@@ -109,9 +109,23 @@ export class AdminComponent implements OnInit {
       this.userAdminService.resetPoints(user.id).subscribe({
         next: () => {
           alert(`Pontos de ${user.name} foram zerados.`);
+          this.loadUsers();
         }
       });
     }
+  }
+
+  adjustPoints(user: User, points: number): void {
+    if (isNaN(points) || points === 0) return;
+    this.userAdminService.addPoints(user.id, points).subscribe({
+      next: (updated) => {
+        this.users.update(users => users.map(u => u.id === updated.id ? updated : u));
+        alert(`Pontos do usuário "${user.name}" ajustados em ${points > 0 ? '+' : ''}${points}. Novo saldo de pontos extras: ${updated.bonusPoints ?? 0}.`);
+      },
+      error: (err: HttpErrorResponse) => {
+        alert(err.error?.message ?? 'Erro ao ajustar pontos.');
+      }
+    });
   }
 
   formatDate(date: string): string {
