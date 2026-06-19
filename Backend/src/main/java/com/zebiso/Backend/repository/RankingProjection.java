@@ -11,4 +11,8 @@ public interface RankingProjection {
     String getAvatar();
 
     Long getTotalPoints();
+
+    Integer getPreviousPosition();
+
+    Integer getCurrentPosition();
 }

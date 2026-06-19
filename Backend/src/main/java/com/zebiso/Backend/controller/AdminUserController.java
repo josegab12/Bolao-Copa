@@ -47,6 +47,8 @@ public class AdminUserController {
     public ResponseEntity<UserResponse> addPoints(
             @PathVariable UUID id,
             @RequestBody AddPointsRequest request) {
-        return ResponseEntity.ok(userService.addPoints(id, request.points()));
+        UserResponse response = userService.addPoints(id, request.points());
+        predictionService.updateRankingPositions();
+        return ResponseEntity.ok(response);
     }
 }

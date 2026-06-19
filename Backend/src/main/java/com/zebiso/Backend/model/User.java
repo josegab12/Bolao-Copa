@@ -32,6 +32,12 @@ public class User {
     @Column(nullable = false, columnDefinition = "integer default 0")
     private int bonusPoints = 0;
 
+    @Column(nullable = true)
+    private Integer previousPosition;
+
+    @Column(nullable = true)
+    private Integer currentPosition;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -77,6 +83,22 @@ public class User {
 
     public void setBonusPoints(int bonusPoints) {
         this.bonusPoints = bonusPoints;
+    }
+
+    public Integer getPreviousPosition() {
+        return previousPosition;
+    }
+
+    public void setPreviousPosition(Integer previousPosition) {
+        this.previousPosition = previousPosition;
+    }
+
+    public Integer getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(Integer currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
     public LocalDateTime getCreatedAt() {

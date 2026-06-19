@@ -22,9 +22,20 @@
 
       @for (entry of ranking(); track entry.userId) {
         <div class="row" [class.me]="isCurrentUser(entry)">
-          <span class="position" [class.top-1]="entry.position === 1" [class.top-2]="entry.position === 2" [class.top-3]="entry.position === 3">
-            {{ entry.position }}
-          </span>
+          <div class="position-container">
+            <span class="position" [class.top-1]="entry.position === 1" [class.top-2]="entry.position === 2" [class.top-3]="entry.position === 3">
+              {{ entry.position }}
+            </span>
+            <span class="trend" [class]="getTrend(entry)" [title]="getTrendDescription(entry)">
+              @if (getTrend(entry) === 'up') {
+                ▲
+              } @else if (getTrend(entry) === 'down') {
+                ▼
+              } @else {
+                —
+              }
+            </span>
+          </div>
           <div class="player-info">
             @if (entry.avatar) {
               <img [src]="entry.avatar" alt="Avatar" class="mini-avatar" />

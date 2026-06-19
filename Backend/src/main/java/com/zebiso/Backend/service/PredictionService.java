@@ -99,9 +99,26 @@ public class PredictionService {
                     row.getUserId(),
                     row.getName(),
                     row.getAvatar(),
-                    row.getTotalPoints()));
+                    row.getTotalPoints(),
+                    row.getPreviousPosition()));
         }
         return ranking;
+    }
+
+    @Transactional
+    public void updateRankingPositions() {
+        List<RankingProjection> rows = predictionRepository.findRanking();
+        int position = 1;
+        for (RankingProjection row : rows) {
+            UUID userId = row.getUserId();
+            User user = userService.findById(userId);
+            if (user.getCurrentPosition() != null) {
+                user.setPreviousPosition(user.getCurrentPosition());
+            } else {
+                user.setPreviousPosition(position);
+            }
+            user.setCurrentPosition(position++);
+        }
     }
 
     @Transactional
@@ -124,6 +141,7 @@ public class PredictionService {
     public void resetUserPoints(UUID userId) {
         userService.findById(userId);
         predictionRepository.deleteByUserId(userId);
+        updateRankingPositions();
     }
 
     private PredictionResponse toResponse(Prediction prediction) {

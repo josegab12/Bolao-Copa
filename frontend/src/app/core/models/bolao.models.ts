@@ -47,6 +47,7 @@ export interface RankingEntry {
   name: string;
   avatar?: string;
   totalPoints: number;
+  previousPosition?: number | null;
 }
 
 export interface MatchPrediction {

@@ -68,6 +68,7 @@ public class MatchService {
         match.setStatus(MatchStatus.FINALIZADO);
         matchRepository.save(match);
         predictionService.recalculateForMatch(match);
+        predictionService.updateRankingPositions();
         return MatchMapper.toResponse(match);
     }
 

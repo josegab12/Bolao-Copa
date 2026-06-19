@@ -35,4 +35,24 @@ export class RankingComponent implements OnInit {
   isCurrentUser(entry: RankingEntry): boolean {
     return entry.userId === this.auth.getUserId();
   }
+
+  getTrend(entry: RankingEntry): 'up' | 'down' | 'stable' {
+    if (entry.previousPosition === null || entry.previousPosition === undefined) {
+      return 'stable';
+    }
+    if (entry.previousPosition > entry.position) {
+      return 'up';
+    }
+    if (entry.previousPosition < entry.position) {
+      return 'down';
+    }
+    return 'stable';
+  }
+
+  getTrendDescription(entry: RankingEntry): string {
+    const trend = this.getTrend(entry);
+    if (trend === 'up') return 'Subiu de posição';
+    if (trend === 'down') return 'Desceu de posição';
+    return 'Manteve a posição';
+  }
 }
