@@ -1,5 +1,6 @@
 package com.zebiso.Backend.service;
 
+import com.zebiso.Backend.dto.CreateMatchRequest;
 import com.zebiso.Backend.dto.DayMatchesResponse;
 import com.zebiso.Backend.dto.MatchResponse;
 import com.zebiso.Backend.dto.MatchResultRequest;
@@ -69,6 +70,21 @@ public class MatchService {
         matchRepository.save(match);
         predictionService.recalculateForMatch(match);
         predictionService.updateRankingPositions();
+        return MatchMapper.toResponse(match);
+    }
+
+    @Transactional
+    public MatchResponse createMatch(CreateMatchRequest request) {
+        String stage = request.stage() != null && !request.stage().isBlank() ? request.stage() : "Eliminatórias";
+        Match match = new Match(
+                request.homeTeam(),
+                request.awayTeam(),
+                request.kickoffAt(),
+                stage,
+                request.groupName(),
+                request.location()
+        );
+        matchRepository.save(match);
         return MatchMapper.toResponse(match);
     }
 

@@ -1,5 +1,6 @@
 package com.zebiso.Backend.controller;
 
+import com.zebiso.Backend.dto.CreateMatchRequest;
 import com.zebiso.Backend.dto.DayMatchesResponse;
 import com.zebiso.Backend.dto.MatchResponse;
 import com.zebiso.Backend.dto.MatchResultRequest;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,5 +57,11 @@ public class MatchController {
             @PathVariable UUID id,
             @Valid @RequestBody MatchResultRequest request) {
         return ResponseEntity.ok(matchService.registerResult(id, request));
+    }
+
+    @PostMapping
+    public ResponseEntity<MatchResponse> createMatch(
+            @Valid @RequestBody CreateMatchRequest request) {
+        return ResponseEntity.ok(matchService.createMatch(request));
     }
 }

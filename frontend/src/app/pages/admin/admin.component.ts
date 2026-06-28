@@ -36,7 +36,19 @@ export class AdminComponent implements OnInit {
   pageError = signal('');
   forms = signal<Record<string, ResultForm>>({});
 
-  activeTab = signal<'jogos' | 'usuarios'>('jogos');
+  activeTab = signal<'jogos' | 'usuarios' | 'criar-jogo'>('jogos');
+
+  // Form fields for creating a new match
+  newHomeTeam = '';
+  newAwayTeam = '';
+  newDate = '';
+  newTime = '';
+  newStage = 'Eliminatórias';
+  newGroupName = '';
+  newLocation = '';
+  creatingMatch = signal(false);
+  createMatchSuccess = signal('');
+  createMatchError = signal('');
 
   ngOnInit(): void {
     if (this.admin.isAdmin()) {
@@ -124,6 +136,46 @@ export class AdminComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         alert(err.error?.message ?? 'Erro ao ajustar pontos.');
+      }
+    });
+  }
+
+  createMatch(): void {
+    this.createMatchSuccess.set('');
+    this.createMatchError.set('');
+
+    if (!this.newHomeTeam.trim() || !this.newAwayTeam.trim() || !this.newDate || !this.newTime) {
+      this.createMatchError.set('Preencha os campos obrigatórios (Times, Dia e Horário).');
+      return;
+    }
+
+    this.creatingMatch.set(true);
+
+    const kickoffAt = `${this.newDate}T${this.newTime}:00`;
+
+    this.matchService.createMatch({
+      homeTeam: this.newHomeTeam.trim(),
+      awayTeam: this.newAwayTeam.trim(),
+      kickoffAt,
+      stage: this.newStage.trim() || undefined,
+      groupName: this.newGroupName.trim() || undefined,
+      location: this.newLocation.trim() || undefined
+    }).subscribe({
+      next: () => {
+        this.creatingMatch.set(false);
+        this.createMatchSuccess.set('Partida criada com sucesso!');
+        this.newHomeTeam = '';
+        this.newAwayTeam = '';
+        this.newDate = '';
+        this.newTime = '';
+        this.newStage = 'Eliminatórias';
+        this.newGroupName = '';
+        this.newLocation = '';
+        this.loadMatches();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.creatingMatch.set(false);
+        this.createMatchError.set(err.error?.message ?? 'Erro ao criar partida.');
       }
     });
   }

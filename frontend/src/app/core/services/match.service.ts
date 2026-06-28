@@ -26,4 +26,8 @@ export class MatchService {
       awayScore
     });
   }
+
+  createMatch(match: { homeTeam: string; awayTeam: string; kickoffAt: string; stage?: string; groupName?: string; location?: string }) {
+    return this.http.post<Match>(`${environment.apiUrl}/jogos`, match);
+  }
 }

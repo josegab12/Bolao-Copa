@@ -46,6 +46,13 @@
       </button>
       <button
         type="button"
+        [class.active]="activeTab() === 'criar-jogo'"
+        (click)="activeTab.set('criar-jogo')"
+      >
+        Criar Partida
+      </button>
+      <button
+        type="button"
         [class.active]="activeTab() === 'usuarios'"
         (click)="activeTab.set('usuarios')"
       >
@@ -75,7 +82,7 @@
                   [class.today]="isToday(day.date)">
                   <div class="match-meta">
 
-                    <span>Grupo {{ match.groupName }}</span>
+                    <span>{{ match.groupName ? 'Grupo ' + match.groupName : match.stage }}</span>
                     <span class="status" [attr.data-status]="match.status">{{ statusLabel(match.status) }}</span>
                     <span>{{ formatTime(match.kickoffAt) }}</span>
                   </div>
@@ -136,6 +143,106 @@
           </section>
         }
       }
+    } @else if (activeTab() === 'criar-jogo') {
+      <div class="create-match-container card">
+        <h2>Criar Nova Partida</h2>
+        <p class="description">Cadastre um novo jogo para a fase eliminatória.</p>
+
+        <form (ngSubmit)="createMatch()" class="create-match-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="homeTeam">Time Mandante *</label>
+              <input
+                id="homeTeam"
+                type="text"
+                [(ngModel)]="newHomeTeam"
+                name="homeTeam"
+                placeholder="Ex: Brasil"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="awayTeam">Time Visitante *</label>
+              <input
+                id="awayTeam"
+                type="text"
+                [(ngModel)]="newAwayTeam"
+                name="awayTeam"
+                placeholder="Ex: Argentina"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="date">Dia *</label>
+              <input
+                id="date"
+                type="date"
+                [(ngModel)]="newDate"
+                name="date"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="time">Horário *</label>
+              <input
+                id="time"
+                type="time"
+                [(ngModel)]="newTime"
+                name="time"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="stage">Fase / Estágio</label>
+              <input
+                id="stage"
+                type="text"
+                [(ngModel)]="newStage"
+                name="stage"
+                placeholder="Ex: Oitavas de Final, Eliminatórias"
+              />
+            </div>
+            <div class="form-group">
+              <label for="groupName">Grupo (opcional)</label>
+              <input
+                id="groupName"
+                type="text"
+                [(ngModel)]="newGroupName"
+                name="groupName"
+                placeholder="Ex: A, B ou deixe em branco"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="location">Local / Estádio (opcional)</label>
+            <input
+              id="location"
+              type="text"
+              [(ngModel)]="newLocation"
+              name="location"
+              placeholder="Ex: Maracanã"
+            />
+          </div>
+
+          @if (createMatchSuccess()) {
+            <p class="success">{{ createMatchSuccess() }}</p>
+          }
+          @if (createMatchError()) {
+            <p class="error">{{ createMatchError() }}</p>
+          }
+
+          <button type="submit" class="btn-primary" [disabled]="creatingMatch()">
+            {{ creatingMatch() ? 'Criando...' : 'Criar Partida' }}
+          </button>
+        </form>
+      </div>
     } @else {
       @if (loadingUsers()) {
         <p class="state">Carregando usuarios...</p>
