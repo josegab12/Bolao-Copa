@@ -18,6 +18,8 @@ public interface PredictionRepository extends JpaRepository<Prediction, UUID> {
 
     void deleteByUserId(UUID userId);
 
+    void deleteByMatchId(UUID matchId);
+
     @Query("""
             SELECT u.id AS userId, u.name AS name, u.avatar AS avatar, 
                    (COALESCE(SUM(p.pointsEarned), 0) + u.bonusPoints) AS totalPoints,

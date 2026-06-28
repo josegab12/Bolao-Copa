@@ -144,6 +144,11 @@ public class PredictionService {
         updateRankingPositions();
     }
 
+    @Transactional
+    public void deleteByMatchId(UUID matchId) {
+        predictionRepository.deleteByMatchId(matchId);
+    }
+
     private PredictionResponse toResponse(Prediction prediction) {
         Match match = prediction.getMatch();
         return new PredictionResponse(

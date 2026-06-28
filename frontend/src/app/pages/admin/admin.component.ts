@@ -180,6 +180,21 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  deleteMatch(match: Match): void {
+    if (confirm(`Deseja realmente apagar a partida "${match.homeTeam} x ${match.awayTeam}"? Isso tambem apagara todos os palpites associados a ela.`)) {
+      this.matchService.deleteMatch(match.id).subscribe({
+        next: () => {
+          alert('Partida apagada com sucesso.');
+          this.loadMatches();
+        },
+        error: (err: HttpErrorResponse) => {
+          alert(err.error?.message ?? 'Erro ao apagar partida.');
+        }
+      });
+    }
+  }
+
+
   formatDate(date: string): string {
     return new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', {
       weekday: 'long',

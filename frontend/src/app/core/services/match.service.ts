@@ -30,4 +30,8 @@ export class MatchService {
   createMatch(match: { homeTeam: string; awayTeam: string; kickoffAt: string; stage?: string; groupName?: string; location?: string }) {
     return this.http.post<Match>(`${environment.apiUrl}/jogos`, match);
   }
+
+  deleteMatch(matchId: string) {
+    return this.http.delete<void>(`${environment.apiUrl}/jogos/${matchId}`);
+  }
 }

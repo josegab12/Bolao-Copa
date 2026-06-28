@@ -88,6 +88,14 @@ public class MatchService {
         return MatchMapper.toResponse(match);
     }
 
+    @Transactional
+    public void deleteMatch(UUID matchId) {
+        Match match = getMatch(matchId);
+        predictionService.deleteByMatchId(matchId);
+        matchRepository.delete(match);
+        predictionService.updateRankingPositions();
+    }
+
     Match getMatch(UUID matchId) {
         return matchRepository.findById(matchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Jogo nao encontrado"));
